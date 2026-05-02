@@ -3,320 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Africa Region — CF Monitoring Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <title>JoJo Reading Adventure</title>
   <style>
     :root {
-      --un-blue: #009EDB;
-      --bg: #f5f8fb;
-      --text: #1f2d3d;
-      --muted: #6b7b8c;
+      --bg: #fff8ef;
       --card: #ffffff;
-      --border: #dce6ef;
+      --ink: #2b2b44;
+      --accent: #ff7a59;
+      --accent-2: #3a86ff;
+      --ok: #2a9d8f;
+      --warn: #f4a261;
+      --shadow: rgba(35, 45, 78, 0.15);
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    header {
-      background: var(--un-blue);
-      color: white;
-      padding: 14px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    header h1 { margin: 0; font-size: 1.25rem; }
-    main { padding: 16px; max-width: 1400px; margin: 0 auto; }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-    }
-    .card .label { color: var(--muted); font-size: 0.85rem; }
-    .card .value { margin-top: 6px; font-size: 1.45rem; font-weight: 700; }
-    .panel {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-    .filter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
-      align-items: end;
-    }
-    label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
-    select, input, button {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #bfd3e3;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      background: white;
-    }
-    button {
-      cursor: pointer;
-      background: var(--un-blue);
-      color: white;
-      border: none;
-      font-weight: 600;
-    }
-    button.secondary { background: #4e6f88; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-    .actions button { width: auto; }
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .tab-btn { background: #e7f5fc; color: #075d84; }
-    .tab-btn.active { background: var(--un-blue); color: #fff; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    th, td { border-bottom: 1px solid var(--border); padding: 8px; vertical-align: top; text-align: left; }
-    th.sortable { cursor: pointer; user-select: none; }
-    tr:hover { background: #f7fcff; }
-    .pagination { margin-top: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .nested { background: #fbfeff; }
-    .nested-cell { padding-left: 28px; color: #27465a; }
-    footer {
-      text-align: center;
-      color: #456;
-      padding: 16px;
-      font-size: 0.85rem;
-    }
-    canvas { max-height: 420px; }
+    body { margin: 0; font-family: "Comic Sans MS", "Segoe UI", Arial, sans-serif; background: radial-gradient(circle at top left, #fff2cc, var(--bg)); color: var(--ink); min-height: 100vh; }
+    .container { max-width: 960px; margin: 0 auto; padding: 20px 14px 28px; }
+    .hero { text-align: center; background: var(--card); border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px var(--shadow); }
+    h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+    .subtitle { margin: 10px 0 0; color: #5a5d75; }
+    .layout { margin-top: 16px; display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; }
+    @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border-radius: 18px; box-shadow: 0 8px 20px var(--shadow); padding: 16px; }
+    .word-box { font-size: clamp(2rem, 7vw, 3.4rem); text-align: center; padding: 16px; border-radius: 16px; background: #f3f7ff; margin-bottom: 12px; letter-spacing: 2px; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { border: none; border-radius: 12px; padding: 10px 13px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .speak { background: var(--accent-2); color: white; }
+    .next { background: var(--accent); color: white; }
+    .check { background: var(--ok); color: white; }
+    .hint { background: #ece9ff; color: #4a3ca3; }
+    input[type="text"] { width: 100%; margin: 10px 0; border-radius: 12px; border: 2px solid #dadcf0; padding: 11px; font-size: 1.1rem; }
+    .feedback { min-height: 30px; font-weight: bold; padding: 8px; border-radius: 10px; background: #f9f8ff; }
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+    .stat { background: #f6fff7; border-radius: 12px; padding: 10px; text-align: center; font-weight: 700; }
+    .story { margin-top: 12px; font-size: 1.1rem; line-height: 1.6; background: #fffdf7; border-left: 6px solid var(--warn); border-radius: 10px; padding: 10px; }
+    .letter-buttons { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+    .letter-buttons button { padding: 10px 0; background: #e8f6ff; color: #194d74; border: 2px solid #cbeaff; font-size: 1rem; font-weight: 800; }
+    .family-box { margin: 12px 0 10px; padding: 10px; border: 2px dashed #ffce7f; border-radius: 12px; background: #fff7e8; }
+    .family-box p { margin: 0 0 8px; font-weight: 700; }
+    .family-box button { background: #ffd166; color: #5f4203; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Africa Region — CF Monitoring Dashboard</h1>
-    <div id="currentDate"></div>
-  </header>
-
-  <main>
-    <section class="cards" id="summaryCards"></section>
-
-    <section class="panel">
-      <h3 style="margin-top:0">Filters</h3>
-      <div class="filter-grid">
-        <div><label>Country</label><select id="countryFilter"><option value="">All</option></select></div>
-        <div><label>Status</label><select id="statusFilter"><option value="">All</option></select></div>
-        <div><label>Gender marker</label><select id="genderFilter"><option value="">All</option></select></div>
-        <div><label>SDG Goals</label><select id="sdgFilter"><option value="">All</option></select></div>
-        <div><label>Agency abbreviations</label><select id="agencyFilter"><option value="">All</option></select></div>
-        <div><label>Plan start year from</label><input type="number" id="yearFrom" placeholder="e.g. 2021"/></div>
-        <div><label>Plan start year to</label><input type="number" id="yearTo" placeholder="e.g. 2026"/></div>
-        <div><label>Search (Country, Output, Description)</label><input type="text" id="searchInput" placeholder="Type to search..."/></div>
-      </div>
-      <div class="actions">
-        <button id="clearFilters" class="secondary">Clear All Filters</button>
-        <button id="downloadCsv">Download Filtered Data as CSV</button>
-      </div>
+  <div class="container">
+    <section class="hero">
+      <h1>📚 JoJo Reading Adventure</h1>
+      <p class="subtitle">A playful reading helper for a Primary 2 learner in Uganda (about age 7).</p>
     </section>
 
-    <section class="panel">
-      <h3 style="margin-top:0">Top 15 Countries — Resource Comparison</h3>
-      <canvas id="resourceChart"></canvas>
-    </section>
-
-    <section class="panel">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="countryTab">By Country</button>
-        <button class="tab-btn" data-tab="agencyTab">By Agency</button>
-        <button class="tab-btn" data-tab="sdgTab">By SDG</button>
-        <button class="tab-btn" data-tab="outputsTab">All Outputs</button>
-      </div>
-
-      <div id="countryTab" class="tab-content active"><div class="table-wrap"><table id="countryTable"></table></div></div>
-      <div id="agencyTab" class="tab-content"><div class="table-wrap"><table id="agencyTable"></table></div></div>
-      <div id="sdgTab" class="tab-content">
-        <canvas id="sdgChart"></canvas>
-        <div class="table-wrap" style="margin-top:10px"><table id="sdgTable"></table></div>
-      </div>
-      <div id="outputsTab" class="tab-content">
-        <div class="table-wrap"><table id="outputsTable"></table></div>
-        <div class="pagination">
-          <button id="prevPage" class="secondary">Previous</button>
-          <span id="pageInfo"></span>
-          <button id="nextPage" class="secondary">Next</button>
+    <section class="layout">
+      <article class="card">
+        <h2>Welcome Chat</h2>
+        <div class="family-box">
+          <p>Tap and read these family greetings:</p>
+          <div class="btn-row">
+            <button class="hint greet-btn">How is Jayden?</button>
+            <button class="hint greet-btn">How is Jadon?</button>
+            <button class="hint greet-btn">How is Janyo?</button>
+            <button class="hint greet-btn">How is Mumy Obino?</button>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
 
-  <footer>Data source: UN INFO | Africa Region CF Monitoring | For internal use only</footer>
+        <h2>1) Read the Word</h2>
+        <div id="wordBox" class="word-box">sun</div>
+        <div class="btn-row">
+          <button class="speak" id="speakWord">🔊 Say Word (Slow)</button>
+          <button class="hint" id="sayLetters">🔡 Say Letters (Slow)</button>
+          <button class="next" id="nextWord">➡️ New Word</button>
+        </div>
+
+        <h3>2) Type what you read</h3>
+        <input id="answerInput" type="text" placeholder="Type the word here" autocomplete="off" />
+        <div class="btn-row"><button class="check" id="checkAnswer">✅ Check Answer</button></div>
+        <p id="feedback" class="feedback"></p>
+
+        <div class="stats">
+          <div class="stat">⭐ Score: <span id="score">0</span></div>
+          <div class="stat">🔥 Streak: <span id="streak">0</span></div>
+        </div>
+
+        <div class="story" id="storyText"></div>
+      </article>
+
+      <aside class="card">
+        <h2>Sound Practice</h2>
+        <p>Tap letters to hear sounds and build confidence.</p>
+        <div class="letter-buttons" id="letters"></div>
+      </aside>
+    </section>
+  </div>
 
   <script>
-    const state = { raw: [], filtered: [], page: 1, pageSize: 50, sortKey: null, sortDir: 'asc', expandedCountries: new Set() };
-    let resourceChart, sdgChart;
+    const words = ["sun", "cat", "book", "tree", "fish", "milk", "rain", "home", "school", "friend", "water", "happy", "play", "read", "write", "smile", "chair", "phone", "mango", "banana"];
+    const storyTemplates = [
+      'JoJo can read the word "{word}". She smiles and says it loudly!',
+      'At school, JoJo sees "{word}" and reads it with confidence.',
+      'JoJo reads "{word}" to mummy, and mummy claps for her.',
+      'Today JoJo learned "{word}". Great job, star reader!'
+    ];
 
-    const F = {
-      country: document.getElementById('countryFilter'), status: document.getElementById('statusFilter'), gender: document.getElementById('genderFilter'),
-      sdg: document.getElementById('sdgFilter'), agency: document.getElementById('agencyFilter'), from: document.getElementById('yearFrom'),
-      to: document.getElementById('yearTo'), search: document.getElementById('searchInput')
-    };
+    let currentWord = "sun";
+    let score = 0;
+    let streak = 0;
 
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+    const wordBox = document.getElementById("wordBox");
+    const answerInput = document.getElementById("answerInput");
+    const feedback = document.getElementById("feedback");
+    const scoreEl = document.getElementById("score");
+    const streakEl = document.getElementById("streak");
+    const storyText = document.getElementById("storyText");
 
-    const parseNum = v => Number(String(v || '').replace(/[^\d.-]/g, '')) || 0;
-    const fmtMoneyM = v => `$${(v / 1_000_000).toLocaleString(undefined, {maximumFractionDigits:2})}M`;
-    const splitVals = v => String(v || '').split(/[;,|]/).map(s => s.trim()).filter(Boolean);
-    const unique = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    function chooseClearVoice() {
+      const voices = speechSynthesis.getVoices();
+      const preferred = voices.find(v => /en-GB|en-US/i.test(v.lang) && /female|samantha|zira|google uk english female/i.test(v.name));
+      return preferred || voices.find(v => /en/i.test(v.lang)) || null;
+    }
 
-    Papa.parse('data.csv', { download: true, header: true, skipEmptyLines: true,
-      complete: (results) => {
-        state.raw = results.data;
-        populateFilters(state.raw);
-        applyFilters();
-      }, error: () => alert('Failed to load data.csv')
+    function speak(text, mode = "word") {
+      speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = mode === "letters" ? 0.45 : 0.52;
+      utter.pitch = 1.0;
+      utter.volume = 1;
+      const chosen = chooseClearVoice();
+      if (chosen) utter.voice = chosen;
+      speechSynthesis.speak(utter);
+    }
+
+    function randomWord() {
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      wordBox.textContent = currentWord;
+      answerInput.value = "";
+      feedback.textContent = "Try reading and typing the word.";
+      showStory();
+    }
+
+    function showStory() {
+      const t = storyTemplates[Math.floor(Math.random() * storyTemplates.length)];
+      storyText.textContent = "Mini Story: " + t.replace("{word}", currentWord);
+    }
+
+    function checkAnswer() {
+      const guess = answerInput.value.trim().toLowerCase();
+      if (!guess) { feedback.textContent = "Please type the word first."; return; }
+
+      if (guess === currentWord.toLowerCase()) {
+        score += 10;
+        streak += 1;
+        feedback.textContent = `Excellent JoJo! "${currentWord}" is correct! 🎉`;
+        speak("Excellent! You are correct.");
+      } else {
+        streak = 0;
+        feedback.textContent = `Good try! The word is "${currentWord}". Let's read it together.`;
+        speak(`Good try. The word is ${currentWord}`);
+      }
+      scoreEl.textContent = score;
+      streakEl.textContent = streak;
+    }
+
+    document.getElementById("speakWord").addEventListener("click", () => speak(currentWord, "word"));
+    document.getElementById("sayLetters").addEventListener("click", () => speak(currentWord.split("").join(" ... "), "letters"));
+    document.getElementById("nextWord").addEventListener("click", randomWord);
+    document.getElementById("checkAnswer").addEventListener("click", checkAnswer);
+    answerInput.addEventListener("keydown", e => { if (e.key === "Enter") checkAnswer(); });
+
+    document.querySelectorAll(".greet-btn").forEach(btn => {
+      btn.addEventListener("click", () => speak(btn.textContent, "word"));
     });
 
-    function populateFilters(rows) {
-      fill(F.country, unique(rows.map(r=>r['Country'])));
-      fill(F.status, unique(rows.map(r=>r['Status'])));
-      fill(F.gender, unique(rows.map(r=>r['Gender marker'])));
-      fill(F.sdg, unique(rows.flatMap(r=>splitVals(r['SDG Goals']))));
-      fill(F.agency, unique(rows.flatMap(r=>splitVals(r['Agency abbreviations']))));
-    }
-
-    function fill(sel, vals){ vals.forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); }); }
-
-    Object.values(F).forEach(el => el.addEventListener('input', ()=>{ state.page=1; applyFilters(); }));
-    document.getElementById('clearFilters').onclick = () => {
-      Object.values(F).forEach(el => el.value=''); state.page=1; applyFilters();
-    };
-
-    document.getElementById('downloadCsv').onclick = () => {
-      const csv = Papa.unparse(state.filtered);
-      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-      const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='filtered_data.csv'; a.click(); URL.revokeObjectURL(a.href);
-    };
-
-    function applyFilters() {
-      const search = F.search.value.trim().toLowerCase();
-      const from = parseInt(F.from.value, 10); const to = parseInt(F.to.value, 10);
-      state.filtered = state.raw.filter(r => {
-        const year = new Date(r['Plan start date']).getFullYear();
-        if (F.country.value && r['Country'] !== F.country.value) return false;
-        if (F.status.value && r['Status'] !== F.status.value) return false;
-        if (F.gender.value && r['Gender marker'] !== F.gender.value) return false;
-        if (F.sdg.value && !splitVals(r['SDG Goals']).includes(F.sdg.value)) return false;
-        if (F.agency.value && !splitVals(r['Agency abbreviations']).includes(F.agency.value)) return false;
-        if (!Number.isNaN(from) && year < from) return false;
-        if (!Number.isNaN(to) && year > to) return false;
-        if (search) {
-          const hay = `${r['Country']||''} ${r['Output']||''} ${r['Description']||''}`.toLowerCase();
-          if (!hay.includes(search)) return false;
-        }
-        return true;
-      });
-      renderAll();
-    }
-
-    function renderAll(){ renderCards(); renderCountryTab(); renderAgencyTab(); renderSdgTab(); renderOutputsTab(); renderResourceChart(); }
-
-    function renderCards(){
-      const rows = state.filtered;
-      const countries = new Set(rows.map(r=>r['Country']).filter(Boolean)).size;
-      const agencies = new Set(rows.flatMap(r=>splitVals(r['Agency abbreviations']))).size;
-      const req = rows.reduce((s,r)=>s+parseNum(r['Total required resources']),0);
-      const avail = rows.reduce((s,r)=>s+parseNum(r['Total available resources']),0);
-      const exp = rows.reduce((s,r)=>s+parseNum(r['Total expenditure resources']),0);
-      const items = [
-        ['Total rows/outputs', rows.length.toLocaleString()], ['Countries', countries.toLocaleString()], ['Unique agencies', agencies.toLocaleString()],
-        ['Total required resources', fmtMoneyM(req)], ['Total available resources', fmtMoneyM(avail)], ['Total expenditure', fmtMoneyM(exp)]
-      ];
-      document.getElementById('summaryCards').innerHTML = items.map(([l,v]) => `<div class="card"><div class="label">${l}</div><div class="value">${v}</div></div>`).join('');
-    }
-
-    function renderCountryTab() {
-      const map = new Map();
-      state.filtered.forEach(r=>{
-        const c = r['Country']||'Unknown';
-        if(!map.has(c)) map.set(c,{country:c,outputs:0,agencies:new Set(),req:0,avail:0,exp:0,rows:[]});
-        const o=map.get(c); o.outputs++; splitVals(r['Agency abbreviations']).forEach(a=>o.agencies.add(a)); o.req+=parseNum(r['Total required resources']); o.avail+=parseNum(r['Total available resources']); o.exp+=parseNum(r['Total expenditure resources']); o.rows.push(r);
-      });
-      const arr=[...map.values()].sort((a,b)=>b.req-a.req);
-      let html='<thead><tr><th>Country</th><th># Outputs</th><th># Agencies</th><th>Required</th><th>Available</th><th>Expenditure</th></tr></thead><tbody>';
-      arr.forEach(g=>{
-        const ex=state.expandedCountries.has(g.country);
-        html += `<tr data-country="${g.country}"><td>${ex?'▼':'▶'} ${g.country}</td><td>${g.outputs}</td><td>${g.agencies.size}</td><td>${fmtMoneyM(g.req)}</td><td>${fmtMoneyM(g.avail)}</td><td>${fmtMoneyM(g.exp)}</td></tr>`;
-        if(ex){ g.rows.forEach(r=>{ html += `<tr class="nested"><td colspan="6" class="nested-cell">${r['Output code']||''} — ${r['Output']||''}</td></tr>`; }); }
-      });
-      document.getElementById('countryTable').innerHTML = html + '</tbody>';
-      document.querySelectorAll('#countryTable tbody tr[data-country]').forEach(tr=>tr.onclick=()=>{ const c=tr.dataset.country; state.expandedCountries.has(c)?state.expandedCountries.delete(c):state.expandedCountries.add(c); renderCountryTab(); });
-    }
-
-    function renderAgencyTab(){
-      const map = new Map();
-      state.filtered.forEach(r=> splitVals(r['Agency abbreviations']).forEach(a=>{
-        if(!map.has(a)) map.set(a,{agency:a,countries:new Set(),outputs:0,exp:0});
-        const o=map.get(a); o.countries.add(r['Country']); o.outputs++; o.exp += parseNum(r['Total expenditure resources']);
-      }));
-      const arr=[...map.values()].sort((a,b)=>b.exp-a.exp);
-      let html='<thead><tr><th>Agency</th><th>Countries covered</th><th># Outputs</th><th>Total expenditure</th></tr></thead><tbody>';
-      arr.forEach(x=> html += `<tr><td>${x.agency}</td><td>${x.countries.size}</td><td>${x.outputs}</td><td>${fmtMoneyM(x.exp)}</td></tr>`);
-      document.getElementById('agencyTable').innerHTML = html + '</tbody>';
-    }
-
-    function renderSdgTab(){
-      const map = new Map();
-      state.filtered.forEach(r=> splitVals(r['SDG Goals']).forEach(s=> map.set(s,(map.get(s)||0)+1)));
-      const arr=[...map.entries()].sort((a,b)=>b[1]-a[1]);
-      const labels=arr.map(x=>x[0]), data=arr.map(x=>x[1]);
-      if(sdgChart) sdgChart.destroy();
-      sdgChart = new Chart(document.getElementById('sdgChart'), { type:'bar', data:{labels,datasets:[{label:'Outputs',data,backgroundColor:'#009EDB'}]}, options:{responsive:true,plugins:{legend:{display:false}}} });
-      document.getElementById('sdgTable').innerHTML = '<thead><tr><th>SDG Goal</th><th># Outputs</th></tr></thead><tbody>' + arr.map(([s,c])=>`<tr><td>${s}</td><td>${c}</td></tr>`).join('') + '</tbody>';
-    }
-
-    function renderOutputsTab(){
-      let rows=[...state.filtered];
-      if(state.sortKey){ rows.sort((a,b)=>{ const av=a[state.sortKey]||'', bv=b[state.sortKey]||''; const na=parseNum(av), nb=parseNum(bv); const cmp=(na||nb)?na-nb:String(av).localeCompare(String(bv)); return state.sortDir==='asc'?cmp:-cmp; }); }
-      const totalPages = Math.max(1, Math.ceil(rows.length / state.pageSize)); if(state.page>totalPages) state.page=totalPages;
-      const view = rows.slice((state.page-1)*state.pageSize, state.page*state.pageSize);
-      const cols = ['Country','Output code','Output','Status','Gender marker','SDG Goals','Agency abbreviations','Total required resources','Total expenditure resources'];
-      const headers=cols.map(c=>`<th class="sortable" data-key="${c}">${c}${state.sortKey===c?(state.sortDir==='asc'?' ▲':' ▼'):''}</th>`).join('');
-      const body=view.map(r=>`<tr>${cols.map(c=>`<td>${r[c]||''}</td>`).join('')}</tr>`).join('');
-      document.getElementById('outputsTable').innerHTML = `<thead><tr>${headers}</tr></thead><tbody>${body}</tbody>`;
-      document.querySelectorAll('#outputsTable th.sortable').forEach(th=>th.onclick=()=>{ const k=th.dataset.key; state.sortDir=(state.sortKey===k&&state.sortDir==='asc')?'desc':'asc'; state.sortKey=k; renderOutputsTab(); });
-      document.getElementById('pageInfo').textContent = `Page ${state.page} of ${totalPages} (${rows.length.toLocaleString()} rows)`;
-    }
-
-    document.getElementById('prevPage').onclick = ()=>{ if(state.page>1){ state.page--; renderOutputsTab(); }};
-    document.getElementById('nextPage').onclick = ()=>{ const max=Math.max(1,Math.ceil(state.filtered.length/state.pageSize)); if(state.page<max){ state.page++; renderOutputsTab(); }};
-
-    function renderResourceChart(){
-      const m = new Map();
-      state.filtered.forEach(r=>{ const c=r['Country']||'Unknown'; if(!m.has(c)) m.set(c,{req:0,avail:0,exp:0}); const o=m.get(c); o.req+=parseNum(r['Total required resources']); o.avail+=parseNum(r['Total available resources']); o.exp+=parseNum(r['Total expenditure resources']); });
-      const arr=[...m.entries()].map(([c,v])=>({country:c,...v})).sort((a,b)=>b.req-a.req).slice(0,15);
-      const labels=arr.map(x=>x.country);
-      if(resourceChart) resourceChart.destroy();
-      resourceChart = new Chart(document.getElementById('resourceChart'), {
-        type:'bar',
-        data:{labels,datasets:[{label:'Required',data:arr.map(x=>x.req),backgroundColor:'#009EDB'},{label:'Available',data:arr.map(x=>x.avail),backgroundColor:'#50BFE6'},{label:'Expenditure',data:arr.map(x=>x.exp),backgroundColor:'#005a80'}]},
-        options:{responsive:true,scales:{y:{ticks:{callback:v=>`$${(v/1_000_000).toFixed(1)}M`}}}}
-      });
-    }
-
-    document.querySelectorAll('.tab-btn').forEach(btn=>btn.onclick=()=>{
-      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.getElementById(btn.dataset.tab).classList.add('active');
+    const lettersHolder = document.getElementById("letters");
+    "abcdefghijklmnopqrstuvwxyz".split("").forEach(letter => {
+      const b = document.createElement("button");
+      b.textContent = letter;
+      b.addEventListener("click", () => speak(letter, "letters"));
+      lettersHolder.appendChild(b);
     });
+
+    speechSynthesis.onvoiceschanged = () => {};
+    randomWord();
   </script>
 </body>
 </html>
